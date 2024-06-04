@@ -1,0 +1,113 @@
+[gd_scene load_steps=12 format=3 uid="uid://cvg6jsllvpcmt"]
+
+[ext_resource type="Script" path="res://scenes/nodes/test_gun/test_gun.gd" id="1_yo5gl"]
+[ext_resource type="PackedScene" uid="uid://ca3ied58y8xse" path="res://scenes/nodes/bullet_basic/bullet_basic.tscn" id="2_qcigg"]
+[ext_resource type="AudioStream" uid="uid://06han64us32i" path="res://assets/sounds/guns/Hand_Gun.wav" id="3_nco2h"]
+[ext_resource type="Texture2D" uid="uid://cr3e3gwvunro7" path="res://assets/textures/guns/glock/glock.png" id="3_xjit5"]
+[ext_resource type="Texture2D" uid="uid://djmi4u7pyn4yx" path="res://assets/textures/guns/glock/glock_shoot_1.png" id="5_ve0o0"]
+[ext_resource type="Texture2D" uid="uid://b86eepg0efbcs" path="res://assets/textures/guns/glock/glock_shoot_2.png" id="6_rx406"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_4kalp"]
+random_pitch = 1.2
+random_volume_offset_db = 0.2
+streams_count = 1
+stream_0/stream = ExtResource("3_nco2h")
+stream_0/weight = 1.0
+
+[sub_resource type="Animation" id="Animation_x50s1"]
+resource_name = "idle"
+
+[sub_resource type="Animation" id="Animation_dosh0"]
+resource_name = "shoot"
+length = 0.217
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0203435, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [&"shoot", &"default"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0203435, 0.1, 0.161735),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AnimatedSprite2D:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0198592, 0.1, 0.162704),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [-0.523599, -0.785398, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_687rh"]
+_data = {
+"idle": SubResource("Animation_x50s1"),
+"shoot": SubResource("Animation_dosh0")
+}
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ixqai"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_xjit5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_ve0o0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_rx406")
+}],
+"loop": true,
+"name": &"shoot",
+"speed": 10.0
+}]
+
+[node name="test_gun" type="Node2D" node_paths=PackedStringArray("BarrelMarker", "Sprite")]
+script = ExtResource("1_yo5gl")
+BarrelMarker = NodePath("Barrel")
+BulletScene = ExtResource("2_qcigg")
+MaxAmmo = 300
+MagSize = 20
+BulletSpeed = 5.0
+BulletDamage = 1
+ReloadTime = 1.0
+AfterShotDelay = 0.12
+Spray = 7.0
+DirectionalShakeAmount = 10.0
+ShotSound = SubResource("AudioStreamRandomizer_4kalp")
+Sprite = NodePath("AnimatedSprite2D")
+
+[node name="Barrel" type="Marker2D" parent="."]
+position = Vector2(7, -3)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_687rh")
+}
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(3, -1)
+sprite_frames = SubResource("SpriteFrames_ixqai")
